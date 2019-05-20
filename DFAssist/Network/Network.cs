@@ -193,13 +193,13 @@ namespace DFAssist
         {
             try
             {
-                var netFwMgr = GetInstance<INetFwMgr>("HNetCfg.FwMgr");
-                var netAuthApps = netFwMgr.LocalPolicy.CurrentProfile.AuthorizedApplications;
+                var netFwPolicy2 = GetInstance<INetFwPolicy2>("HNetCfg.FwPolicy2");
 
                 var exists = false;
-                foreach (var netAuthAppObject in netAuthApps)
+
+                foreach (INetFwRule rule in netFwPolicy2.Rules)
                 {
-                    if (netAuthAppObject is INetFwAuthorizedApplication netAuthApp && netAuthApp.ProcessImageFileName == _exePath && netAuthApp.Enabled)
+                    if (rule.Name.IndexOf("FFXIV_FATE") != -1)
                     {
                         exists = true;
                     }
@@ -208,14 +208,16 @@ namespace DFAssist
                 if (exists)
                     return;
 
-                var networkApp = GetInstance<INetFwAuthorizedApplication>("HNetCfg.FwAuthorizedApplication");
+                var netFwRule = GetInstance<INetFwRule>("HNetCfg.FWRule");
+                netFwRule.Name = "FFXIV_FATE";
+                netFwRule.Description = "Allow FFXIV ACT network traffic";
+                netFwRule.ApplicationName = _exePath;
+                netFwRule.Action = NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
+                netFwRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
+                netFwRule.Enabled = true;
+                netFwRule.InterfaceTypes = "All";
 
-                networkApp.Enabled = true;
-                networkApp.Name = "FFXIV_FATE";
-                networkApp.ProcessImageFileName = _exePath;
-                networkApp.Scope = NET_FW_SCOPE_.NET_FW_SCOPE_ALL;
-
-                netAuthApps.Add(networkApp);
+                netFwPolicy2.Rules.Add(netFwRule);
 
                 Logger.Success("l-firewall-registered");
             }

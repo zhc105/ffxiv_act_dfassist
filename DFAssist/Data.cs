@@ -17,7 +17,7 @@ namespace DFAssist
         
         public static void Initialize(string language)
         {
-            var json = WebInteractions.DownloadString($"https://raw.githubusercontent.com/easly1989/ffxiv_act_dfassist/master/data/{language}.json");
+            var json = WebInteractions.DownloadString($"https://raw.githubusercontent.com/zhc105/ffxiv_act_dfassist/master/data/{language}.json");
             Fill(json, language);
         }
 
@@ -59,8 +59,11 @@ namespace DFAssist
         public static Instance GetInstance(int code, bool oldId = false)
         {
             if (oldId)
-                return Instances.Values.FirstOrDefault(x => x.OldId == code);
-
+            {
+                var inst = Instances.Values.FirstOrDefault(x => x.OldId == code);
+                return inst != null ? inst : new Instance { Name = Localization.GetText("l-unknown-instance", code) };
+            }
+                
             return Instances.TryGetValue(code, out var instance) ? instance : new Instance { Name = Localization.GetText("l-unknown-instance", code) };
         }
 

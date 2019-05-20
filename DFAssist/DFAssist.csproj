@@ -53,7 +53,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
-      <HintPath>..\..\ffxiv_actor\ActorConsole\bin\Debug\ACT\Advanced Combat Tracker.exe</HintPath>
+      <HintPath>C:\Program Files (x86)\Advanced Combat Tracker\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
